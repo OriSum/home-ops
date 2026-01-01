@@ -16,14 +16,3 @@ spec:
     namespace: flux-system
   targetNamespace: flux-system
   wait: false
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: flux-system
-  namespace: flux-system
-spec:
-  interval: 1m
-  url: https://github.com/OriSum/home-ops.git
-  ref:
-    branch: init_1
