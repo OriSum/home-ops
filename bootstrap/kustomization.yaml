@@ -5,6 +5,4 @@ kind: Kustomization
 namespace: flux-system
 
 resources:
-  - https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.38.1/install.yaml
-  - ./flux/gitrepository.yaml
-  - ./flux/fluxinstance.yaml
+  - ./flux-system/
