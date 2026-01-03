@@ -1,0 +1,15 @@
+fluxInstance:
+  instance:
+    components:
+      - source-controller
+      - kustomize-controller
+      - helm-controller
+    sync:
+      kind: "GitRepository"
+      url: "https://github.com/OriSum/home-ops.git"
+      ref: "refs/heads/main"
+      path: "./kubernetes/apps/flux-system"
+
+  commonAnnotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-6"

@@ -1,0 +1,15 @@
+apiVersion: v2
+name: home-ops-bootstrap
+description: A Helm chart to bootstrap the cluster with Flux operator and user-provided Flux resources
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: flux-operator
+    version: "0.37.1"
+    repository: "oci://ghcr.io/controlplaneio-fluxcd/charts"
+  - name: flux-instance
+    version: "0.37.1"
+    repository: "oci://ghcr.io/controlplaneio-fluxcd/charts"
+    alias: fluxInstance
+
