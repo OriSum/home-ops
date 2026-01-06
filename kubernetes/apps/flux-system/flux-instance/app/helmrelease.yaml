@@ -18,6 +18,17 @@ spec:
         - source-controller
         - kustomize-controller
         - helm-controller
+      kustomize:
+        patches:
+          - patch: |-
+              - op: add
+                path: /spec/decryption
+                value:
+                  provider: sops
+                  secretRef:
+                    name: flux-sops
+            target:
+              kind: Kustomization
       sync:
         kind: "GitRepository"
         url: "https://github.com/OriSum/home-ops.git"
