@@ -33,9 +33,6 @@ spec:
               NO_AUTOUPDATE: true
               TUNNEL_METRICS: 0.0.0.0:8080
               TUNNEL_TRANSPORT_PROTOCOL: http2
-            envFrom:
-              - secretRef:
-                  name: "{{ .Release.Name }}-secret"
             args:
               - tunnel
               - --loglevel
@@ -72,11 +69,10 @@ spec:
       config:
         data:
           config.yaml: |-
+            tunnel: 3f5c2d04-3dd7-4af8-bdf1-7fb0756b1fa5
+            credentials-file: /etc/cloudflared/credentials.json
             ingress:
               - hostname: "*.nerw.us"
-                originRequest:
-                  http2Origin: true
-                  originServerName: ext.nerw.us
                 service: https://envoy-external.{{ .Release.Namespace }}.svc.cluster.local:443
               - service: http_status:404
     persistence:
@@ -86,3 +82,9 @@ spec:
         globalMounts:
           - path: /etc/cloudflared/config.yaml
             subPath: config.yaml
+      secret-file:
+        type: secret
+        name: cloudflare-tunnel
+        globalMounts:
+          - path: /etc/cloudflared/credentials.json
+            subPath: credentials.json

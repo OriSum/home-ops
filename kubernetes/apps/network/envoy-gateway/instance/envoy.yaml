@@ -12,9 +12,7 @@ spec:
     type: Kubernetes
     kubernetes:
       envoyDeployment:
-        replicas: 2
         container:
-          imageRepository: mirror.gcr.io/envoyproxy/envoy
           resources:
             requests:
               cpu: 10m
@@ -22,13 +20,6 @@ spec:
               memory: 1Gi
       envoyService:
         externalTrafficPolicy: Local
-  shutdown:
-    drainTimeout: 180s
-  telemetry:
-    metrics:
-      prometheus:
-        compression:
-          type: Gzip
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gatewayclass_v1.json
 apiVersion: gateway.networking.k8s.io/v1
@@ -48,17 +39,8 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: envoy-external
-  annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname ext.nerw.us
-    gatus.home-operations.com/endpoint: |-
-      client:
-        dns-resolver: tcp://1.1.1.1:53
-      group: external
 spec:
   gatewayClassName: envoy
-  # infrastructure:
-  #   annotations:
-  #     external-dns.alpha.kubernetes.io/hostname: *hostname
   listeners:
     - name: http
       protocol: HTTP
@@ -66,53 +48,16 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    # - name: https
-    #   protocol: HTTPS
-    #   port: 443
-    #   allowedRoutes:
-    #     namespaces:
-    #       from: All
-    #   tls:
-    #     certificateRefs:
-    #       - kind: Secret
-    #         name: nerw-us-tls
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/gateway_v1.json
-# apiVersion: gateway.networking.k8s.io/v1
-# kind: Gateway
-# metadata:
-#   name: envoy-internal
-#   annotations:
-#     external-dns.alpha.kubernetes.io/target: &hostname internal.nerw.us
-#     gatus.home-operations.com/endpoint: |-
-#       group: internal
-#       guarded: true
-#       ui:
-#         hide-hostname: true
-#         hide-url: true
-# spec:
-#   gatewayClassName: envoy
-#   infrastructure:
-#     annotations:
-#       external-dns.alpha.kubernetes.io/hostname: *hostname
-#       lbipam.cilium.io/ips: 192.168.123.121
-#   listeners:
-#     - name: http
-#       protocol: HTTP
-#       port: 80
-#       allowedRoutes:
-#         namespaces:
-#           from: Same
-#     - name: https
-#       protocol: HTTPS
-#       port: 443
-#       allowedRoutes:
-#         namespaces:
-#           from: All
-#       tls:
-#         certificateRefs:
-#           - kind: Secret
-#             name: nerw-us-tls
+    - name: https
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: nerw-us-tls
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.envoyproxy.io/backendtrafficpolicy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
@@ -140,10 +85,6 @@ kind: ClientTrafficPolicy
 metadata:
   name: envoy
 spec:
-  # clientIPDetection:
-  #   xForwardedFor:
-  #     trustedCIDRs:
-  #       - 10.24.0.0/16
   connection:
     bufferLimit: 8Mi
     maxAcceptPerSocketEvent: 0
@@ -170,14 +111,9 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: https-redirect
-  # annotations:
-  #   external-dns.alpha.kubernetes.io/controller: none
 spec:
   parentRefs:
     - name: envoy-external
-      namespace: network
-      sectionName: http
-    - name: envoy-internal
       namespace: network
       sectionName: http
   rules:

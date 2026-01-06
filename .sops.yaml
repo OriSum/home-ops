@@ -1,0 +1,9 @@
+---
+creation_rules:
+  - path_regex: kubernetes/.+\.sops\.yaml
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    age: age14hvhphhas2h9msyua6f0cfzkfdsvtumq8meqahc6aajm42htcfksuk6zz2
+stores:
+  yaml:
+    indent: 2
