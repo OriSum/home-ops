@@ -22,13 +22,11 @@ spec:
         patches:
           - patch: |-
               - op: add
-                path: /spec/decryption
-                value:
-                  provider: sops
-                  secretRef:
-                    name: flux-sops
+                path: /spec/template/spec/containers/0/args/-
+                value: --sops-age-secret=flux-sops
             target:
-              kind: Kustomization
+              kind: Deployment
+              name: kustomize-controller
       sync:
         kind: "GitRepository"
         url: "https://github.com/OriSum/home-ops.git"
