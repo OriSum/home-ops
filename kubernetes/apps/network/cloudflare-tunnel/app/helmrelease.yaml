@@ -73,7 +73,7 @@ spec:
             credentials-file: /etc/cloudflared/credentials.json
             ingress:
               - hostname: "*.nerw.us"
-                service: https://envoy-external.{{ .Release.Namespace }}.svc.cluster.local:443
+                service: http://envoy-external.{{ .Release.Namespace }}.svc.cluster.local:80
               - service: http_status:404
     persistence:
       config-file:
