@@ -17,3 +17,9 @@ spec:
           kubernetes:
             deploy:
               type: GatewayNamespace
+        infrastructure:
+          proxy:
+            config:
+              # Trust CloudFront tunnel as downstream proxy
+              useRemoteAddress: true
+              xffNumTrustedHops: 1
