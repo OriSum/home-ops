@@ -21,6 +21,8 @@ kind: Kustomization
 metadata:
   name: envoy-gateway-instance
 spec:
+  dependsOn:
+    - name: envoy-gateway
   interval: 1h
   path: ./kubernetes/apps/network/envoy-gateway/instance
   prune: true
