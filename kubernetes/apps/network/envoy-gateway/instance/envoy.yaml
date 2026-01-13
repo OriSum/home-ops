@@ -98,47 +98,24 @@ spec:
     alpnProtocols:
       - h2
       - http/1.1
-# ---
-# # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
-# apiVersion: gateway.networking.k8s.io/v1
-# kind: HTTPRoute
-# metadata:
-#   name: https-redirect
-# spec:
-#   parentRefs:
-#     - name: envoy-external
-#       namespace: network
-#       sectionName: http
-#   rules:
-#     - matches:
-#         - headers:
-#             - name: X-Forwarded-Proto
-#               value: http
-#       filters:
-#         - type: RequestRedirect
-#           requestRedirect:
-#             scheme: https
-#             statusCode: 301
 ---
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: EnvoyPatchPolicy
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
-  name: redirect-http-to-https
+  name: https-redirect
 spec:
-  workloadSelector:
-    matchLabels:
-      envoyproxy: envoy
-  patches:
-    - applyTo: VIRTUAL_HOST
-      match:
-        context: GATEWAY
-      patch:
-        operation: MERGE
-        value:
-          routes:
-            - match:
-                headers:
-                  - name: x-forwarded-proto
-                    exact_match: http
-              redirect:
-                https_redirect: true
+  parentRefs:
+    - name: envoy-external
+      namespace: network
+      sectionName: http
+  rules:
+    - matches:
+        - headers:
+            - name: X-Forwarded-Proto
+              value: http
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301
