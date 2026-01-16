@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
+    ":automergeBranch",
+    ":disableRateLimiting",
+    ":dependencyDashboard",
+    ":semanticCommits",
+  ],
+  dependencyDashboardTitle: "Renovate Dashboard 🤖",
+  suppressNotifications: [
+    "prEditedNotification",
+    "prIgnoreNotification",
+  ],
+  ignorePaths: [
+    "**/*.sops.*",
+    "**/bootstrap/**",
+  ],
+  flux: {
+    managerFilePatterns: ["/\\.yaml$/"],
+  },
+  "helm-values": {
+    managerFilePatterns: ["/\\.yaml$/"],
+  },
+  kubernetes: {
+    managerFilePatterns: ["/\\.yaml$/"],
+  },
+}
